@@ -6,6 +6,9 @@ name: NodeJS API build Pipeline
 on:
   workflow_dispatch:  # This allows manual execution
 
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/my-nodejs-api
+
 jobs:
 
   test:
@@ -33,16 +36,28 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: test # Runs only if "test" job succeeds
+    outputs:
+      image-tag: ${{ steps.set-tag.outputs.tag }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Set image tag
+        id: set-tag
+        run: echo "tag=${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Build Application Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/my-nodejs-api:latest .
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.run_number }} .
+      
+      - name: Save Docker image
+        run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: image.tar.gz
 
   publish:
     name: Publish to GHCR
@@ -52,13 +67,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+          path: .
+
+      - name: Load Docker image
+        run: gunzip -c image.tar.gz | docker load
+
       - name: Login to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push Docker Image to GHCR
         run: |
-          docker tag ghcr.io/${{ github.repository }}/my-nodejs-api:latest ghcr.io/${{ github.repository }}/my-nodejs-api:${{ github.run_number }}
-          docker push ghcr.io/${{ github.repository }}/my-nodejs-api:latest
-          docker push ghcr.io/${{ github.repository }}/my-nodejs-api:${{ github.run_number }}
+          docker push ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image-tag }}
 
 
