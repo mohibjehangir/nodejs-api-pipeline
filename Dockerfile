@@ -1,9 +1,13 @@
 # Use an official Node.js runtime as a parent image
 FROM node:18-alpine
 
-# Accept build-time argument and set as environment variable
+# Accept arguments
+ARG BUILD_NUMBER
 ARG COMMIT_SHA
-ENV COMMIT_SHA=$COMMIT_SHA
+
+# Set environment variables
+ENV BUILD_NUMBER=${BUILD_NUMBER}
+ENV COMMIT_SHA=${COMMIT_SHA}
 
 # Set the working directory inside the container
 WORKDIR /app

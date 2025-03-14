@@ -50,6 +50,7 @@ jobs:
       - name: Build Application Docker Image
         run: |
           docker build \
+            --build-arg BUILD_NUMBER=${{ github.run_number }} \
             --build-arg COMMIT_SHA=$(git rev-parse HEAD) \
             -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.run_number }} .
       
@@ -87,5 +88,3 @@ jobs:
           docker tag ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:${{ github.run_number }}
           docker push ${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.IMAGE_NAME }}:${{ github.run_number }}
-
-
