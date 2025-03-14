@@ -41,8 +41,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build Application Docker Image
-        run: npm run build
-        
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/my-nodejs-api:latest .
+
   publish:
     name: Publish to GHCR
     runs-on: ubuntu-latest

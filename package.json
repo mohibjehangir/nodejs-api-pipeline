@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
   "start": "node index.js",
-  "test": "jest --verbose",
-  "build": "docker build -t ghcr.io/${{ github.repository }}/my-nodejs-api:latest ."
+  "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",
