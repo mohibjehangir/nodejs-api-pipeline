@@ -81,7 +81,8 @@ jobs:
 
       - name: Push Docker Image to GHCR
         run: |
+          docker tag ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:${{ github.run_number }}
           docker push ${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image-tag }}
+          docker push ${{ env.IMAGE_NAME }}:${{ github.run_number }}
 
 
