@@ -9,7 +9,7 @@ on:
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/my-nodejs-api
   BUILD_NUMBER: ${{ github.run_number }}
-
+  COMMIT_SHA: ${{ github.sha }}
 jobs:
 
   test:
@@ -45,14 +45,14 @@ jobs:
 
       - name: Set image tag
         id: set-tag
-        run: echo "tag=${{ github.run_number }}" >> $GITHUB_OUTPUT
+        run: echo "tag=$BUILD_NUMBER" >> $GITHUB_OUTPUT
 
       - name: Build Application Docker Image
         run: |
           docker build \
-            --build-arg BUILD_NUMBER=${{ github.run_number }} \
-            --build-arg COMMIT_SHA=$(git rev-parse HEAD) \
-            -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.run_number }} .
+            --build-arg BUILD_NUMBER=$BUILD_NUMBER \
+            --build-arg COMMIT_SHA=$COMMIT_SHA \
+            -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER .
       
       - name: Save Docker image
         run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
@@ -85,6 +85,6 @@ jobs:
 
       - name: Push Docker Image to GHCR
         run: |
-          docker tag ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          docker push ${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          docker tag $IMAGE_NAME:latest $IMAGE_NAME:$BUILD_NUMBER
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$BUILD_NUMBER
