@@ -42,25 +42,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Create dummy file
-        run: echo "test" > test.txt
+      - name: Set image tag
+        id: set-tag
+        run: echo "tag=${{ github.run_number }}" >> $GITHUB_OUTPUT
 
-#      - name: Set image tag
- #       id: set-tag
-  #      run: echo "tag=${{ github.run_number }}" >> $GITHUB_OUTPUT
-#
- #     - name: Build Application Docker Image
-  #      run: |
-   #       docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.run_number }} .
-    #  
-     # - name: Save Docker image
-      #  run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
+      - name: Build Application Docker Image
+        run: |
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.run_number }} .
+      
+      - name: Save Docker image
+        run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
 
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: docker-image
-          path: test.txt
+ #     - name: Upload Docker image artifact
+  #      uses: actions/upload-artifact@v3
+   #     with:
+    #      name: docker-image
+     #     path: test.txt
 
   publish:
     name: Publish to GHCR
