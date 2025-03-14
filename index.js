@@ -9,8 +9,8 @@ const app = express();
 
 // Load metadata from file
 const metadata = JSON.parse(fs.readFileSync("metadata.json", "utf8"));
-const buildNumber = process.env.BUILD_NUMBER || "1.0-0001";
-const commitSHA = "007";
+const buildNumber = process.env.BUILD_NUMBER || "001";
+const commitSHA = execSync("git rev-parse HEAD").toString().trim();
 
 
 //Root endpoint

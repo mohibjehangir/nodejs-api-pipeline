@@ -8,6 +8,7 @@ on:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/my-nodejs-api
+  BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
 
