@@ -16,11 +16,11 @@ It includes:
 
 ##  Features
 
-- ✅ Express.js REST API
-- ✅ Metadata-driven versioning
-- ✅ Git commit SHA extraction
-- ✅ Dockerfile for containerization
-- ✅ GitHub Actions pipeline for:
+-  Express.js REST API
+-  Metadata-driven versioning
+-  Git commit SHA extraction
+-  Dockerfile for containerization
+-  GitHub Actions pipeline for:
   - Verification and Testing
   - Building, Tagging and Scanning Docker Image
   - Publishing to GitHub Container Registry
@@ -34,11 +34,14 @@ It includes:
 ├── index.js                    # Main API server logic
 ├── metadata.json               # App description and base version
 ├── package.json                # Project metadata and scripts
-└── api.test.js                 # Test cases using Jest & Supertest
+└── eslint.config.mjs           # eslint code config
+├── test/                       # Test cases using Jest & Supertest
+    └── api.test.js
 ```
 
 ##  Setup & Run Locally
 
+### Using npm:
 ```bash
 # Install dependencies
 npm install
@@ -49,7 +52,7 @@ npm run test
 # Start the API locally
 npm start
 ```
-### Build the Docker image:
+### Using Docker build image :
 
 ```bash
 docker build \
@@ -71,6 +74,8 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 -  Linting & Testing with Jest
 -  Docker Build with dynamic tags
 -  Publish to [ghcr.io](https://ghcr.io)
+
+![alt text](<readme diagram cicd.drawio.png>)
 
 ##  Endpoints
 
