@@ -75,8 +75,8 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 -  Docker Build with dynamic tags
 -  Publish to [ghcr.io](https://ghcr.io)
 
-![alt text](<readme diagram cicd.drawio.png>)
-
+### Pipeline Flow:
+![alt text](cicd-flow-diagram.png)
 ##  Endpoints
 
 | Method | Endpoint   | Description                   |
