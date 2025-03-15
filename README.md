@@ -1,31 +1,31 @@
 # Node.js REST API with CI/CD
 
-This project is a sample Node.js REST API built with Express.js, designed to demonstrate core DevOps principles including versioning, build automation, Docker packaging, and CI/CD using GitHub Actions.
+This project is a sample Node.js REST API built with Express.js, showcasing key DevOps practices such as API versioning, automated testing, Docker image creation, and secure CI/CD deployment using GitHub Actions and GitHub Container Registry.
 
-## 📌 Project Overview
+##  Project Overview
 
 This repository provides a scaffolded API boilerplate and GitHub Actions workflow to standardize the development lifecycle across microservices.
 
 It includes:
 
-- A root `/` endpoint returning a basic message
+- A root `/` endpoint returning a sample "Hello World!' message response.
 - A `/status` endpoint that returns dynamic metadata:
   - `description` from a JSON file
-  - `version` from metadata and CI/CD `BUILD_NUMBER`
+  - `version` from metadata and CI/CD Build Number
   - `sha` from latest Git commit hash
 
-## 🚀 Features
+##  Features
 
 - ✅ Express.js REST API
 - ✅ Metadata-driven versioning
 - ✅ Git commit SHA extraction
 - ✅ Dockerfile for containerization
 - ✅ GitHub Actions pipeline for:
-  - Testing (Jest)
-  - Building and tagging Docker image
+  - Verification and Testing
+  - Building, Tagging and Scanning Docker Image
   - Publishing to GitHub Container Registry
 
-## 🔧 Project Structure
+##  Project Structure
 
 ```
 ├── .github/workflows/          # GitHub Actions pipeline
@@ -37,24 +37,18 @@ It includes:
 └── api.test.js                 # Test cases using Jest & Supertest
 ```
 
-## 🛠️ Setup & Run Locally
+##  Setup & Run Locally
 
 ```bash
 # Install dependencies
 npm install
 
+# Run tests
+npm run test
+
 # Start the API locally
 npm start
 ```
-
-## 🧪 Run Tests
-
-```bash
-npm run test
-```
-
-## 🐳 Docker
-
 ### Build the Docker image:
 
 ```bash
@@ -67,25 +61,25 @@ docker build \
 ### Run the container:
 
 ```bash
-docker run -p 3000:3000 my-nodejs-api
+docker run -p 8080:8080 my-nodejs-api
 ```
 
-## 🔁 CI/CD with GitHub Actions
+##  CI/CD with GitHub Actions
 
 GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 
-- 🔍 Linting & Testing with Jest
-- 🛠️ Docker Build with dynamic tags
-- 🚢 Publish to [ghcr.io](https://ghcr.io)
+-  Linting & Testing with Jest
+-  Docker Build with dynamic tags
+-  Publish to [ghcr.io](https://ghcr.io)
 
-## ✅ Endpoints
+##  Endpoints
 
 | Method | Endpoint   | Description                   |
 |--------|------------|-------------------------------|
 | GET    | `/`        | Returns a basic Hello message |
 | GET    | `/status`  | Returns app metadata JSON     |
 
-## 📟 Sample `/status` Output
+##  Sample `/status` Output
 
 ```json
 {
