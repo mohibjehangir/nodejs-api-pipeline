@@ -35,8 +35,10 @@ jobs:
       - name: Lint Code
         run: npm run lint
 
-      - name: Set Jest Permissions
-        run: chmod +x ./node_modules/.bin/jest
+      - name: Set module Permissions
+        run: |
+          chmod +x ./node_modules/.bin/jest
+          chmod +x ./node_modules/.bin/eslint
 
       - name: Run Tests
         run: npx jest --verbose
