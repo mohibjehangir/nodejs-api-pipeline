@@ -32,13 +32,13 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Lint Code
-        run: npm run lint
-
-      - name: Set module Permissions
+      - name: Set Module Permissions
         run: |
           chmod +x ./node_modules/.bin/jest
           chmod +x ./node_modules/.bin/eslint
+
+      - name: Lint Code
+        run: npm run lint
 
       - name: Run Tests
         run: npx jest --verbose
@@ -53,7 +53,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set image tag
+      - name: Set Image Tag
         id: set-tag
         run: echo "tag=$BUILD_NUMBER" >> $GITHUB_OUTPUT
 
@@ -67,7 +67,7 @@ jobs:
       - name: Save Docker image
         run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
 
-      - name: Upload Docker image artifact
+      - name: Upload Docker Image Artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
@@ -81,13 +81,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Docker image artifact
+      - name: Download Docker Image Artifact
         uses: actions/download-artifact@v4
         with:
           name: docker-image
           path: .
 
-      - name: Load Docker image
+      - name: Load Docker Image
         run: gunzip -c image.tar.gz | docker load
 
       - name: Login to GitHub Container Registry
