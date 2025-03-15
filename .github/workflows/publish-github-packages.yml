@@ -1,10 +1,15 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
 
 name: NodeJS API build Pipeline
 
 on:
-  workflow_dispatch:  # This allows manual execution
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Enables manual trigger
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/my-nodejs-api
@@ -13,7 +18,7 @@ env:
 jobs:
 
   test:
-    name: Run Tests
+    name: Verify & Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -26,6 +31,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Lint Code
+        run: npm run lint
 
       - name: Set Jest Permissions
         run: chmod +x ./node_modules/.bin/jest

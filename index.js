@@ -3,11 +3,9 @@ const PORT = 8080;
 
 //Required for rwo using inbuilt file system and to retrieve commit SHA for git
 const fs = require("fs");
-const { execSync } = require("child_process");
-
 const app = express();
 
-// Load metadata from file
+// Load metadata from file and git env variables
 const metadata = JSON.parse(fs.readFileSync("metadata.json", "utf8"));
 const buildNumber = process.env.BUILD_NUMBER || "001";
 const commitSHA = process.env.COMMIT_SHA || "unknown";
