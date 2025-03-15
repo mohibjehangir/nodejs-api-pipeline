@@ -72,6 +72,13 @@ jobs:
             --build-arg COMMIT_SHA=$COMMIT_SHA \
             -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER .
       
+      - name: Scan Image for Security Vulnerbilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: $IMAGE_NAME:latest
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+
       - name: Save Docker image
         run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
 
