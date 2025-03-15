@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../index.js");  // Ensure this points to your Express app
+const app = require("../index.js");  // This points to our Express app
 
 describe("API Tests", () => {
   it("should return Hello, World!", async () => {

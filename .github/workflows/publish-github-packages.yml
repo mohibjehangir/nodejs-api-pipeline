@@ -1,4 +1,5 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# This GitHub Actions workflow runs tests, builds a Docker image, and publishes it to GitHub Container Registry (GHCR).
+# It supports manual dispatch as well as automatic triggers on push and pull request events.
 
 name: NodeJS API build Pipeline
 
@@ -15,11 +16,13 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/my-nodejs-api
   BUILD_NUMBER: ${{ github.run_number }}
   COMMIT_SHA: ${{ github.sha }}
+
 jobs:
 
   test:
     name: Verify & Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -49,12 +52,13 @@ jobs:
         run: npm run lint
 
       - name: Run Tests
-        run: npx jest --verbose
+        run: npm run test
 
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: test # Runs only if "test" job succeeds
+    timeout-minutes: 10
     outputs:
       image-tag: ${{ steps.set-tag.outputs.tag }}
     steps:
@@ -78,6 +82,14 @@ jobs:
           image-ref: ${{ env.IMAGE_NAME }}:latest
           format: 'table'
           severity: 'CRITICAL,HIGH'
+          output: trivy-report.txt
+
+      - name: Update GitHub Summary with Trivy Report
+        run: |
+          echo '### Trivy Docker Image Vulnerability Report' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat trivy-report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Save Docker image
         run: docker save $IMAGE_NAME:latest | gzip > image.tar.gz
@@ -92,6 +104,7 @@ jobs:
     name: Publish to GHCR
     runs-on: ubuntu-latest
     needs: build  # Runs only if "build" job succeeds
+    timeout-minutes: 10
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

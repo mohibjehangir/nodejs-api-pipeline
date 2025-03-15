@@ -1,9 +1,7 @@
 const express = require("express");
-const PORT = 8080;
-
-//Required for rwo using inbuilt file system and to retrieve commit SHA for git
 const fs = require("fs");
 const app = express();
+const PORT = 8080;
 
 // Load metadata from file and git env variables
 const metadata = JSON.parse(fs.readFileSync("metadata.json", "utf8"));
@@ -27,6 +25,11 @@ app.get("/status", (req, res) => {
       },
     ],
   });
+});
+
+// Fallback route
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
 });
 
 //Export app for testing, only start listening if not in test mode
