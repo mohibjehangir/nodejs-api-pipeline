@@ -17,14 +17,14 @@ It includes:
 
 ##  Features
 
--  Express.js REST API
--  Metadata-driven versioning
--  Git commit SHA extraction
--  Dockerfile for containerization
--  GitHub Actions pipeline for:
+- Express.js REST API
+- Metadata-driven versioning
+- Git commit SHA extraction
+- Dockerfile for containerization
+- GitHub Actions pipeline for:
   - Verification and Testing
   - Building, Tagging and Scanning Docker Image
-  - Publishing to GitHub Container Registry
+  - Publishing to GitHub Container Registry and Notifying Status through Slack
 
 ##  Project Structure
 
@@ -74,7 +74,7 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 
 -  Linting & Testing with Jest
 -  Docker Build with dynamic tags
--  Publish to [ghcr.io](https://ghcr.io)
+-  Publish to [ghcr.io](https://ghcr.io) and notify
 
 ### Pipeline Flow:
 ![alt text](cicd-flow-readme-diagram.png)
@@ -101,13 +101,13 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 
 ##  Limitations & Risks
 
--  The `BUILD_NUMBER` is expected to be passed in manually or via GitHub Actions automatically via CICD Pipeline. There is no auto-incrementing logic in the app.
+-  The `BUILD_NUMBER` is expected to be passed in via GitHub Actions automatically via CICD Pipeline. There is no auto-incrementing logic in the app.
 -  The Git commit SHA is retrieved at build-time. If Docker is built outside a Git context or if `git` is not installed in the container, it will fail.
 -  The container depends on build-time args for versioning and metadata injection. Omitting these may result in invalid `/status` values.
 -  Current tests are basic. More robust test coverage and error handling should be added for production. 
 
-### Improvements for upcomming release
+### Improvements for upcomming V2 release
 
 - Add input validation and middleware-based error handling (e.g., for invalid metadata or 404 routes).
 - Integrate structured logging within application using Winston for production -grade observability.
-- Migrate Dockerfile to a multi stage build.
+- Migrate Dockerfile to a multi stage Docker build.
