@@ -1,3 +1,4 @@
+// Test for API functionality
 const request = require("supertest");
 const app = require("../index.js");  // This points to our Express app
 

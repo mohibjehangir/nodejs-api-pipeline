@@ -8,11 +8,12 @@ This repository provides a scaffolded API boilerplate and GitHub Actions workflo
 
 It includes:
 
-- A root `/` endpoint returning a sample "Hello World!' message response.
+- A REST API whose root `/` endpoint returning a sample "Hello World!' message response.
 - A `/status` endpoint that returns dynamic metadata:
   - `description` from a JSON file
   - `version` from metadata and CI/CD Build Number
   - `sha` from latest Git commit hash
+- A Github Actions Workflow to package the Application into a Docker Image and publish to Github Container Registry.
 
 ##  Features
 
@@ -56,12 +57,12 @@ npm start
 
 ```bash
 docker build \
-  --build-arg BUILD_NUMBER=1234 \
+  --build-arg BUILD_NUMBER=$(git rev-list --count HEAD) \
   --build-arg COMMIT_SHA=$(git rev-parse HEAD) \
   -t my-nodejs-api:latest .
 ```
 
-### Run the container:
+### Running Docker container:
 
 ```bash
 docker run -p 8080:8080 my-nodejs-api
@@ -76,21 +77,21 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 -  Publish to [ghcr.io](https://ghcr.io)
 
 ### Pipeline Flow:
-![alt text](cicd-flow-diagram.png)
-##  Endpoints
+![alt text](cicd-flow-readme-diagram.png)
+##  REST API Endpoints
 
 | Method | Endpoint   | Description                   |
 |--------|------------|-------------------------------|
 | GET    | `/`        | Returns a basic Hello message |
 | GET    | `/status`  | Returns app metadata JSON     |
 
-##  Sample `/status` Output
+### Sample `/status` Output
 
 ```json
 {
   "my-application": [
     {
-      "description": "Sample app for Innablr challenge",
+      "description": "my-application's description",
       "version": "1.0-1234",
       "sha": "abc53458585"
     }
@@ -98,9 +99,15 @@ GitHub Actions pipeline (`publish-github-packages.yml`) automates:
 }
 ```
 
-## ⚠️ Limitations & Risks
+##  Limitations & Risks
 
-- ❗ The `BUILD_NUMBER` is expected to be passed in manually or via GitHub Actions. There is no auto-incrementing logic in the app.
-- ❗ The Git commit SHA is retrieved at build-time. If Docker is built outside a Git context or if `git` is not installed in the container, it will fail.
-- ❗ The container depends on build-time args for versioning and metadata injection. Omitting these may result in invalid `/status` values.
-- 🧪 Current tests are basic. More robust test coverage and error handling should be added for production.
+-  The `BUILD_NUMBER` is expected to be passed in manually or via GitHub Actions automatically via CICD Pipeline. There is no auto-incrementing logic in the app.
+-  The Git commit SHA is retrieved at build-time. If Docker is built outside a Git context or if `git` is not installed in the container, it will fail.
+-  The container depends on build-time args for versioning and metadata injection. Omitting these may result in invalid `/status` values.
+-  Current tests are basic. More robust test coverage and error handling should be added for production. 
+
+### Improvements for upcomming release
+
+- Add input validation and middleware-based error handling (e.g., for invalid metadata or 404 routes).
+- Integrate structured logging within application using Winston for production -grade observability.
+- Migrate Dockerfile to a multi stage build.

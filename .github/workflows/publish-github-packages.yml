@@ -126,3 +126,16 @@ jobs:
           docker tag $IMAGE_NAME:latest $IMAGE_NAME:$BUILD_NUMBER
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$BUILD_NUMBER
+      
+      - name: Notify through Slack
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
